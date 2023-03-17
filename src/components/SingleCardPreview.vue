@@ -1,18 +1,21 @@
 <template>
-    <div class="flex flex-col justify-center items-center transition-transform h-[50%] sm:w-full lg:w-[50%] m-auto rounded-2xl border-2 border-slate-700 shadow-lg shadow-stone-500 lg:mt-48 mt-24">
-      <p class="text-xl">{{ front }}</p>
-      <p class="text-base text-slate-400">{{ back }}</p>
+    <div class="flex flex-col justify-center items-center transition-transform h-[70%] sm:w-full lg:w-[90%] rounded-2xl border-2 border-slate-700 shadow-lg shadow-stone-500 lg:mt-12 mx-auto mt-24">
+        <div class="h-[30%] w-full flex justify-center items-center p-8">
+            <p class="text-2xl">{{ front }}</p>
+        </div>
+        <div class="h-[70%] w-full flex justify-center items-center border-t-2 border-dashed border-slate-700 p-8">
+            <p class="text-xl text-slate-400">{{ back }}</p>
+        </div>
     </div>
 </template>
 
 <script>
-import { RouterLink } from 'vue-router';
-
 export default {
     props: {
+        cardId: String,
+        deckId: String,
         front: String,
         back: String
     },
-    components: { RouterLink }
 }
 </script>

@@ -15,27 +15,26 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/deck',
+      path: '/deck/:id',
       name: 'deck',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: DeckView
+      component: DeckView,
+    },{
+      path: '/deck/:deckId/card/:cardId',
+      name: 'card',
+      component: CardView
+    },
+    {
+      path:'/deck/:deckId/create_new_card',
+      name:'create_new_card',
+      component: CreateNewCardView
     },
     {
       path: '/create_new_deck',
       name: 'create_new_deck',
       component: CreateNewDeckView
-    },
-    {
-      path: '/card',
-      name: 'card',
-      component: CardView
-    },
-    {
-      path:'/create_new_card',
-      name:'create_new_card',
-      component: CreateNewCardView
     }
   ]
 })

@@ -4,6 +4,22 @@
 
 @tailwind utilities;
 
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 8px;
+    border: none;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 100vh;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #c4c4c4;
+  }
+}
+
 .router-link-active {
   border-bottom: solid 2px black;
 }
