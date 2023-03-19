@@ -48,7 +48,7 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { auth } from '../../firebase-service'
+// import { auth } from '../../firebase-service'
 import {computed} from "vue";
 
 export default {
