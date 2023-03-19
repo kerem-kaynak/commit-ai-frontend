@@ -4,6 +4,8 @@ import DeckView from '../views/DeckView.vue'
 import CreateNewDeckView from '../views/CreateNewDeckView.vue'
 import CreateNewCardView from '../views/CreateNewCardView.vue'
 import CardView from '../views/CardView.vue'
+import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
 
 
 const router = createRouter({
@@ -15,13 +17,14 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/deck/:id',
+      path: '/deck/:deckId',
       name: 'deck',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: DeckView,
-    },{
+    },
+    {
       path: '/deck/:deckId/card/:cardId',
       name: 'card',
       component: CardView
@@ -35,6 +38,16 @@ const router = createRouter({
       path: '/create_new_deck',
       name: 'create_new_deck',
       component: CreateNewDeckView
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView
     }
   ]
 })

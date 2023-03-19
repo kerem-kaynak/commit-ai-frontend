@@ -1,6 +1,24 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import '../assets/tailwind.css'
+import { useStore} from "vuex";
+import { auth } from '../../firebase-service'
+import { useRouter } from 'vue-router';
+
+    const store = useStore()
+    const router = useRouter()
+
+
+  auth.onAuthStateChanged(user => {
+    store.dispatch("fetchUser", user);
+  });
+
+  const signOut = async () => {
+      store.dispatch('logOut').then(
+        router.push('/login')
+      )
+  }
+
 </script>
 
 <template>
@@ -9,6 +27,7 @@ import '../assets/tailwind.css'
       <RouterLink class="text-center my-2 transition-transform border-b-2 hover:border-slate-700 hover:ease-in" to="/">Decks</RouterLink>
       <RouterLink class="text-center my-2 transition-transform border-b-2 hover:border-slate-700 hover:ease-in" to="/about">Study</RouterLink>
       <RouterLink class="text-center my-2 transition-transform border-b-2 hover:border-slate-700 hover:ease-in" to="/c">Learn</RouterLink>
+      <button  @click.prevent="signOut" class="text-center my-2 transition-transform border-b-2 hover:border-slate-700 hover:ease-in">Logout</button>
     </nav>
   </div>
 

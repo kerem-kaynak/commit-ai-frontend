@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col justify-center items-center transition-transform h-[70%] sm:w-full lg:w-[90%] rounded-2xl border-2 border-slate-700 shadow-lg shadow-stone-500 lg:mt-12 mx-auto mt-24">
+    <div class="flex flex-col justify-center items-center transition-all ease-in h-[70%] sm:w-full lg:w-[90%] rounded-2xl border-2 border-slate-700 shadow-lg shadow-violet-900/30 lg:mt-12 mx-auto mt-24 hover:shadow-violet-900/50">
         <div class="h-[30%] w-full flex justify-center items-center p-8">
             <p class="text-2xl">{{ front }}</p>
         </div>
