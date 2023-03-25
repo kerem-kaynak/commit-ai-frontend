@@ -15,30 +15,15 @@
 
 <script>
 import { RouterLink } from 'vue-router';
-// import axios from 'axios'
-// import { auth } from '../../firebase-service';
 
 export default {
     props: {
       id: String,
       deckTitle: String,
+      deckDescription: String,
       cardCount: String,
       recallLevel: Number
     },
     components: { RouterLink },
-    // data () {
-    //   return {
-    //     testApi: ''
-    //   }
-    // },
-    // async mounted () {
-    //   const token = await auth.currentUser.getIdToken()
-    //   axios.get('http://localhost:8080/authed', {
-    //     headers: {
-    //       authorization: `Bearer ${token}`
-    //     }
-    //   })
-    //   .then(res => this.testApi = res.data)
-    // }
 }
 </script>

@@ -1,11 +1,26 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import { auth } from '../../firebase-service'
 import CardPreview from '../components/CardPreview.vue'
 import CreateNewCard from '../components/CreateNewCard.vue'
 import { useRoute } from 'vue-router'
-const deck = [{id:'1', deckId:'1', front: 'front 1', back: 'back 1'}, {id:'1', deckId:'1', front: 'front 2', back: 'back 2'}, {id:'1', deckId:'2', front: 'front 3', back: 'back 3'}]
+
 const route = useRoute()
-const deckfiltered = ref(deck.filter(el => el.deckId == route.params.deckId))
+const currentUserId = auth.currentUser.uid
+let cards = ref(null)
+onMounted(async () => {
+  const token = await auth.currentUser.getIdToken()
+  const res = await axios.get('https://commit-ai-backend-wzinf3bnqq-ez.a.run.app/getCards', {
+    headers: {
+      authorization: `Bearer ${token}`
+    },
+    params: { 
+      userId: currentUserId,
+      deckId: route.params.deckId
+    }})
+  cards.value = res.data
+})
 </script>
 
 <template>
@@ -15,7 +30,7 @@ const deckfiltered = ref(deck.filter(el => el.deckId == route.params.deckId))
       <img class="sticky top-12 left-0 h-12" src="../assets/back-icon.svg">
     </RouterLink>
     <ul class="flex flex-row flex-wrap justify-center">
-      <li v-for="card in deckfiltered" :key="card" class="m-8">
+      <li v-for="card in cards" :key="card" class="m-8">
         <CardPreview :cardId="card.id" :deckId="route.params.deckId" :front="card.front" :back="card.back"/>
       </li>
       <li class="m-8">

@@ -15,10 +15,13 @@
             <textarea class="w-full text-center text-md lg:text-2xl bg-transparent border-none focus:outline-none" maxlength="1024" rows="24" v-model="form.cardBack" placeholder="Write an answer to recall here..."></textarea>
           </div>
         </div>
-        <input type="submit" 
+        <Transition name="fade" mode="out-in">
+          <input type="submit" 
           value="Create new card!"
           class="hover:cursor-pointer mt-8 lg:mt-0 px-4 py-2 border-2 border-slate-700 hover:border-violet-700 transition-all duration-300 text-slate-700 hover:text-stone-50 rounded-lg hover:bg-violet-700 shadow-lg shadow-violet-900/50 hover:scale-105"
           >
+        </Transition>
+        <div v-if="error">There was an error with the submission, please try again</div>
       </form>
     </div>
   </main>
@@ -26,6 +29,8 @@
 
 <script>
 import { useRoute } from 'vue-router'
+import { auth } from '../../firebase-service'
+import axios from 'axios'
 export default {
     name: 'PostNewCard',
     data() {
@@ -34,12 +39,33 @@ export default {
                 cardFront: '',
                 cardBack: ''
             },
-            route: useRoute()
+            route: useRoute(),
+            loading: false,
+            error: false
         }
     },
     methods: {
-      submitForm() {
-        alert('clicked!')
+      async submitForm() {
+        this.loading = true
+        try {
+          const currentUserId = auth.currentUser.uid
+          const data = {
+            userId: currentUserId,
+            deckId: this.route.params.deckId,
+            ...this.form
+          }
+          const token = await auth.currentUser.getIdToken()
+          await axios.post('https://commit-ai-backend-wzinf3bnqq-ez.a.run.app/createCard', data, {
+            headers: {
+              authorization: `Bearer ${token}`
+            }
+          })
+          this.$router.push(`/deck/${this.route.params.deckId}`)
+        } catch (err) {
+          this.error = true
+          this.loading = false
+          console.log(err)
+        }
       }
     }
   }

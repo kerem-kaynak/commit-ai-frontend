@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
-import { auth } from '../firebase-service'
+import { auth, db } from '../firebase-service'
+import { doc, setDoc } from "firebase/firestore"
 import {createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut, updateProfile} from 'firebase/auth'
 
 const store = createStore({
@@ -29,6 +30,10 @@ const store = createStore({
           if (user) {
               context.commit('SET_USER', user)
               await updateProfile(user, {displayName: name})
+              await setDoc(doc(db, "users", user.uid), {
+                email: user.email,
+                displayName: user.displayName
+              })
           } else {
               throw new Error('Unable to register user')
           }
