@@ -59,12 +59,28 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      beforeEnter: async (to, from, next) => {
+        const currentUserAuthed = store.getters.user.loggedIn || await getCurrentUser()
+        if (currentUserAuthed) {
+          next('/')
+        } else {
+          next()
+        }
+      }
     },
     {
       path: '/register',
       name: 'register',
-      component: RegisterView
+      component: RegisterView,
+      beforeEnter: async (to, from, next) => {
+        const currentUserAuthed = store.getters.user.loggedIn || await getCurrentUser()
+        if (currentUserAuthed) {
+          next('/')
+        } else {
+          next()
+        }
+      }
     }
   ]
 })
