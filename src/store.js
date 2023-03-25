@@ -46,6 +46,7 @@ const store = createStore({
     async logOut(context){
         await signOut(auth)
         context.commit('SET_USER', null)
+        context.commit('SET_LOGGED_IN', false)
     },
     
     async fetchUser(context ,user) {

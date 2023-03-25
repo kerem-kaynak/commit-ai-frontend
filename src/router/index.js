@@ -6,6 +6,8 @@ import CreateNewCardView from '../views/CreateNewCardView.vue'
 import CardView from '../views/CardView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import { auth } from '../../firebase-service'
+import store from '../store'
 
 
 const router = createRouter({
@@ -14,7 +16,10 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/deck/:deckId',
@@ -23,21 +28,33 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: DeckView,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/deck/:deckId/card/:cardId',
       name: 'card',
-      component: CardView
+      component: CardView,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path:'/deck/:deckId/create_new_card',
       name:'create_new_card',
-      component: CreateNewCardView
+      component: CreateNewCardView,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/create_new_deck',
       name: 'create_new_deck',
-      component: CreateNewDeckView
+      component: CreateNewDeckView,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/login',
@@ -51,5 +68,30 @@ const router = createRouter({
     }
   ]
 })
+
+const getCurrentUser = () => {
+  return new Promise((res,rej) => {
+      const removeListener = auth.onAuthStateChanged(
+          (user) => {
+            store.dispatch("fetchUser", user)
+            removeListener()
+            res(user)
+          },
+          rej
+      )
+  })
+}
+
+router.beforeEach(async (to, from, next) => {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const currentUserAuthed = store.getters.user.loggedIn || await getCurrentUser()
+  if (requiresAuth && !currentUserAuthed) {
+    next('/login')
+  } else {
+    next()
+  }
+})
+
+
 
 export default router

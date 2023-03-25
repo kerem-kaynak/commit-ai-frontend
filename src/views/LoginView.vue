@@ -3,7 +3,7 @@
     <div class="w-full p-6 mx-auto bg-white rounded shadow-lg ring-2 ring-slate-800/50 lg:max-w-md transition-all ease-in shadow-none lg:shadow-xl shadow-violet-900/30 hover:shadow-violet-900/50">
         <h1 class="text-3xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Commit AI</h1>
 
-        <form action="#" @submit.prevent="Login">
+        <form action="#" @submit.prevent="login">
             <div>
                 <label for="email" class="block text-sm text-gray-800">Email</label>
                 <input
@@ -45,51 +45,28 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-// import { auth } from '../../firebase-service'
-import {computed} from "vue";
+import store from '../store'
 
 export default {
-  name: "LoginComponent",
-    setup() {
-  //     auth.onAuthStateChanged(user => {
-  //   store.dispatch("fetchUser", user);
-  // });
-    const email = ref('')
-    const password = ref('')
-    const error = ref(null)
-
-    const store = useStore()
-    const router = useRouter()
-
-    
-
-    const Login = async () => {
+  data() {
+    return {
+      email: '',
+      password: ''
+    }
+  },
+  methods: {
+    async login() {
       try {
         await store.dispatch('logIn', {
-          email: email.value,
-          password: password.value
+          email: this.email,
+          password: this.password
         })
-        router.push('/')
+        this.$router.push('/')
       }
       catch (err) {
-        error.value = err.message
+        console.log(err.message)
       }
     }
-
-    const user = computed(() => {
-    return store.getters.user;
-  });
-
-  if (user.value.loggedIn) {
-    router.push('/')
   }
-
-    return { Login, email, password, error }
-
-    
-  }
-};
+}
 </script>

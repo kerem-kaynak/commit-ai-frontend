@@ -1,24 +1,14 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import '../assets/tailwind.css'
-import { useStore} from "vuex";
-import { auth } from '../../firebase-service'
-import { useRouter } from 'vue-router';
+import store from '../store'
 
-    const store = useStore()
-    const router = useRouter()
+const router = useRouter()
 
-
-  auth.onAuthStateChanged(user => {
-    store.dispatch("fetchUser", user);
-  });
-
-  const signOut = async () => {
-      store.dispatch('logOut').then(
-        router.push('/login')
-      )
-  }
-
+const signOut = async () => {
+  await store.dispatch('logOut')
+  router.push('/login')
+}
 </script>
 
 <template>
