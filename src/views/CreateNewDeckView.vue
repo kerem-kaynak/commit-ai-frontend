@@ -33,6 +33,7 @@
 <script>
 import axios from 'axios'
 import { auth } from '../../firebase-service'
+import env from '../../envConfig'
 
 export default {
     name: 'PostNewDeck',
@@ -56,7 +57,7 @@ export default {
             ...this.form
           }
           const token = await auth.currentUser.getIdToken()
-          await axios.post('https://commit-ai-backend-wzinf3bnqq-ez.a.run.app/createDeck', data, {
+          await axios.post(`${env.apiHost}/createDeck`, data, {
             headers: {
               authorization: `Bearer ${token}`
             }

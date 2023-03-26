@@ -31,6 +31,7 @@
 import { useRoute } from 'vue-router'
 import { auth } from '../../firebase-service'
 import axios from 'axios'
+import env from '../../envConfig'
 export default {
     name: 'PostNewCard',
     data() {
@@ -55,7 +56,7 @@ export default {
             ...this.form
           }
           const token = await auth.currentUser.getIdToken()
-          await axios.post('https://commit-ai-backend-wzinf3bnqq-ez.a.run.app/createCard', data, {
+          await axios.post(`${env.apiHost}/createCard`, data, {
             headers: {
               authorization: `Bearer ${token}`
             }

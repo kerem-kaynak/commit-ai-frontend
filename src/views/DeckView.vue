@@ -5,13 +5,14 @@ import { auth } from '../../firebase-service'
 import CardPreview from '../components/CardPreview.vue'
 import CreateNewCard from '../components/CreateNewCard.vue'
 import { useRoute } from 'vue-router'
+import env from '../../envConfig'
 
 const route = useRoute()
 const currentUserId = auth.currentUser.uid
 let cards = ref(null)
 onMounted(async () => {
   const token = await auth.currentUser.getIdToken()
-  const res = await axios.get('https://commit-ai-backend-wzinf3bnqq-ez.a.run.app/getCards', {
+  const res = await axios.get(`${env.apiHost}/getCards`, {
     headers: {
       authorization: `Bearer ${token}`
     },

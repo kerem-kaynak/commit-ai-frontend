@@ -4,12 +4,13 @@ import CreateNewDeck from '../components/CreateNewDeck.vue'
 import axios from 'axios'
 import { auth } from '../../firebase-service'
 import { ref, onMounted } from 'vue'
+import env from '../../envConfig'
 
 const currentUserId = auth.currentUser.uid
 let decks = ref(null)
 onMounted(async () => {
   const token = await auth.currentUser.getIdToken()
-  const res = await axios.get('https://commit-ai-backend-wzinf3bnqq-ez.a.run.app/getDecks', {
+  const res = await axios.get(`${env.apiHost}/getDecks`, {
     headers: {
       authorization: `Bearer ${token}`
     },

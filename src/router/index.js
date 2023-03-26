@@ -18,7 +18,8 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Decks'
       }
     },
     {
@@ -29,7 +30,8 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: DeckView,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Deck'
       }
     },
     {
@@ -37,7 +39,8 @@ const router = createRouter({
       name: 'card',
       component: CardView,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Card'
       }
     },
     {
@@ -45,7 +48,8 @@ const router = createRouter({
       name:'create_new_card',
       component: CreateNewCardView,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Create Card'
       }
     },
     {
@@ -53,13 +57,17 @@ const router = createRouter({
       name: 'create_new_deck',
       component: CreateNewDeckView,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        title: 'Create Deck'
       }
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView,
+      meta: {
+        title: 'Login'
+      },
       beforeEnter: async (to, from, next) => {
         const currentUserAuthed = store.getters.user.loggedIn || await getCurrentUser()
         if (currentUserAuthed) {
@@ -73,6 +81,9 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: RegisterView,
+      meta: {
+        title: 'Register'
+      },
       beforeEnter: async (to, from, next) => {
         const currentUserAuthed = store.getters.user.loggedIn || await getCurrentUser()
         if (currentUserAuthed) {
@@ -100,6 +111,8 @@ const getCurrentUser = () => {
 
 router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  const pageTitle = to.meta.title
+  document.title = `Commit AI | ${pageTitle}`
   const currentUserAuthed = store.getters.user.loggedIn || await getCurrentUser()
   if (requiresAuth && !currentUserAuthed) {
     next('/login')
