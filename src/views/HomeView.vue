@@ -1,24 +1,21 @@
-<script setup>
+<script>
 import DeckPreview from '../components/DeckPreview.vue'
 import CreateNewDeck from '../components/CreateNewDeck.vue'
-import axios from 'axios'
-import { auth } from '../../firebase-service'
-import { ref, onMounted } from 'vue'
-import env from '../../envConfig'
+import { useStore } from 'vuex';
 
-const currentUserId = auth.currentUser.uid
-let decks = ref(null)
-onMounted(async () => {
-  const token = await auth.currentUser.getIdToken()
-  const res = await axios.get(`${env.apiHost}/getDecks`, {
-    headers: {
-      authorization: `Bearer ${token}`
-    },
-    params: {
-      userId: currentUserId
-    }})
-  decks.value = res.data
-})
+export default {
+  data () {
+    return {
+      store: useStore(),
+    }
+  },
+  components: { DeckPreview, CreateNewDeck },
+  computed: {
+    decks () {
+      return this.store.getters.decks
+    }
+  }
+}
 
 </script>
 
@@ -26,8 +23,8 @@ onMounted(async () => {
   <main>
     <div class="sticky top-0 left-0 h-8 w-full bg-gradient-to-b from-stone-50 z-50"></div>
     <ul v-if="decks" class="flex flex-row flex-wrap justify-center">
-      <li v-for="deck in decks" :key="deck" class="m-8">
-        <DeckPreview :id="deck.id" :deckTitle="deck.name" :deckDescription="deck.description" :cardCount="'placeholder'" :recallLevel="Math.floor(Math.random() * (3 - 1 + 1) + 1)"/>
+      <li v-for="(deck, index) in decks" :key="deck" class="m-8">
+        <DeckPreview :id="deck.id" :deckTitle="deck.name" :deckDescription="deck.description" :cardCount="'placeholder'" :recallLevel="(index % 3) + 1"/>
       </li>
       <li class="m-8">
         <CreateNewDeck />

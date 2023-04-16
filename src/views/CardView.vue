@@ -1,31 +1,24 @@
-<script setup>
-import { ref, onMounted } from 'vue';
+<script>
 import SingleCardPreview from '../components/SingleCardPreview.vue'
 import { useRoute } from 'vue-router'
-import axios from 'axios'
 import { auth } from '../../firebase-service'
-import env from '../../envConfig'
+import { useStore } from 'vuex';
 
-const route = useRoute()
-const currentUserId = auth.currentUser.uid
-let card = {
-  front: ref(null),
-  back: ref(null)
+export default {
+  data () {
+    return {
+      route: useRoute(),
+      store: useStore(),
+      currentUserId: auth.currentUser.uid
+    }
+  },
+  computed: {
+    card () {
+      return this.store.getters.card(this.route.params.deckId, this.route.params.cardId)
+    }
+  },
+  components: { SingleCardPreview }
 }
-
-onMounted(async () => {
-  const token = await auth.currentUser.getIdToken()
-  const res = await axios.get(`${env.apiHost}/getCard`, {
-    headers: {
-      authorization: `Bearer ${token}`
-    }, 
-    params: {
-      userId: currentUserId,
-      deckId: route.params.deckId,
-      cardId: route.params.cardId }})
-  card.front.value = res.data.front
-  card.back.value = res.data.back
-})
 </script>
 
 <template>
@@ -34,6 +27,6 @@ onMounted(async () => {
     <RouterLink :to="{path: `/deck/${route.params.deckId}`}">
       <img class="sticky top-12 left-0 h-12" src="../assets/back-icon.svg">
     </RouterLink>
-    <SingleCardPreview :cardId="route.params.cardId" :deckId="route.params.deckId" :front="card.front.value" :back="card.back.value"/>
+    <SingleCardPreview :cardId="route.params.cardId" :deckId="route.params.deckId" :front="card.front" :back="card.back"/>
     </main> 
 </template>

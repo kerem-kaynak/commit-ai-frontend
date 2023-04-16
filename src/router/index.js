@@ -117,6 +117,7 @@ router.beforeEach(async (to, from, next) => {
   if (requiresAuth && !currentUserAuthed) {
     next('/login')
   } else {
+    store.dispatch('syncData')
     next()
   }
 })

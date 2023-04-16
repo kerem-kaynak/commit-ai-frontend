@@ -27,16 +27,16 @@
 </template>
 
 <script>
-import axios from 'axios';
-import env from '../../envConfig';
 import { useRoute } from 'vue-router';
 import { auth } from '../../firebase-service'
 import DeleteCardModal from '../components/DeleteCardModal.vue'
+import { useStore } from 'vuex';
 
 export default {
     data () {
         return {
             route: useRoute(),
+            store: useStore(),
             isModalVisible: false
         }
     },
@@ -55,12 +55,7 @@ export default {
                 deckId: this.route.params.deckId,
                 cardId: this.route.params.cardId
             }
-            const token = await auth.currentUser.getIdToken()
-            await axios.post(`${env.apiHost}/deleteCard`, data, {
-                headers: {
-                    authorization: `Bearer ${token}`
-                }
-            })
+            this.store.dispatch('deleteCard', data)
             this.$router.push(`/deck/${this.route.params.deckId}`)
         },
         showModal() {

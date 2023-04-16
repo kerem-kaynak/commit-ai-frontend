@@ -31,9 +31,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { useStore } from 'vuex'
 import { auth } from '../../firebase-service'
-import env from '../../envConfig'
 
 export default {
     name: 'PostNewDeck',
@@ -44,7 +43,8 @@ export default {
                 deckDescription: ''               
             },
             loading: false,
-            error: false
+            error: false,
+            store: useStore()
         }
     },
     methods: {
@@ -56,12 +56,7 @@ export default {
             userId: currentUserId,
             ...this.form
           }
-          const token = await auth.currentUser.getIdToken()
-          await axios.post(`${env.apiHost}/createDeck`, data, {
-            headers: {
-              authorization: `Bearer ${token}`
-            }
-          })
+          this.store.dispatch('createDeck', data)
           this.$router.push('/')
         } catch (err) {
           this.error = true

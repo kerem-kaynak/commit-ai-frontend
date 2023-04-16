@@ -30,8 +30,7 @@
 <script>
 import { useRoute } from 'vue-router'
 import { auth } from '../../firebase-service'
-import axios from 'axios'
-import env from '../../envConfig'
+import { useStore } from 'vuex'
 export default {
     name: 'PostNewCard',
     data() {
@@ -41,6 +40,7 @@ export default {
                 cardBack: ''
             },
             route: useRoute(),
+            store: useStore(),
             loading: false,
             error: false
         }
@@ -55,12 +55,7 @@ export default {
             deckId: this.route.params.deckId,
             ...this.form
           }
-          const token = await auth.currentUser.getIdToken()
-          await axios.post(`${env.apiHost}/createCard`, data, {
-            headers: {
-              authorization: `Bearer ${token}`
-            }
-          })
+          this.store.dispatch('createCard', data)
           this.$router.push(`/deck/${this.route.params.deckId}`)
         } catch (err) {
           this.error = true

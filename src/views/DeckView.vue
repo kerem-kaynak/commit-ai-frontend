@@ -1,29 +1,3 @@
-<script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import { auth } from '../../firebase-service'
-import CardPreview from '../components/CardPreview.vue'
-import CreateNewCard from '../components/CreateNewCard.vue'
-import { useRoute } from 'vue-router'
-import env from '../../envConfig'
-
-const route = useRoute()
-const currentUserId = auth.currentUser.uid
-let cards = ref(null)
-onMounted(async () => {
-  const token = await auth.currentUser.getIdToken()
-  const res = await axios.get(`${env.apiHost}/getCards`, {
-    headers: {
-      authorization: `Bearer ${token}`
-    },
-    params: { 
-      userId: currentUserId,
-      deckId: route.params.deckId
-    }})
-  cards.value = res.data
-})
-</script>
-
 <template>
   <main>
     <div class="sticky top-0 left-0 h-8 w-full bg-gradient-to-b from-stone-50 z-50"></div>
@@ -32,7 +6,7 @@ onMounted(async () => {
     </RouterLink>
     <ul class="flex flex-row flex-wrap justify-center">
       <li v-for="card in cards" :key="card" class="m-8">
-        <CardPreview :cardId="card.id" :deckId="route.params.deckId" :front="card.front" :back="card.back"/>
+        <CardPreview :cardId="card?.id" :deckId="route.params.deckId" :front="card?.front" :back="card?.back"/>
       </li>
       <li class="m-8">
         <CreateNewCard :deckId="route.params.deckId" />
@@ -42,3 +16,25 @@ onMounted(async () => {
 
   </main>
 </template>
+
+<script>
+import CardPreview from '../components/CardPreview.vue'
+import CreateNewCard from '../components/CreateNewCard.vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+
+export default {
+  data () {
+    return {
+      route: useRoute(),
+      store: useStore()
+    }
+  },
+  components: { CardPreview, CreateNewCard },
+  computed: {
+    cards () {
+      return this.store.getters.cards(this.$route.params.deckId)
+    }
+  }
+}
+</script>
