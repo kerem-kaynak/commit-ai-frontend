@@ -36,6 +36,10 @@
                     </button>
                 </div>
             </div>
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative my-4 font-sans" v-if="getError">
+              <strong>There was a problem with your login.</strong>
+              Please make sure your credentials are correct!
+            </div>
         </form>
         <p class="mt-8 text-xs font-light text-center text-gray-700"> Don't have an account? <RouterLink to="/register"
                 class="font-medium text-purple-600 hover:underline">Signup</RouterLink></p>
@@ -51,21 +55,26 @@ export default {
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      error: ''
     }
   },
   methods: {
     async login() {
-      try {
+      try{
         await store.dispatch('logIn', {
           email: this.email,
           password: this.password
         })
         this.$router.push('/')
+      } catch (err) {
+        console.log(err)
       }
-      catch (err) {
-        console.log(err.message)
-      }
+    }
+  },
+  computed: {
+    getError() {
+      return store.getters.error
     }
   }
 }

@@ -11,7 +11,8 @@ const store = createStore({
         loggedIn: false,
         data: null
     },
-    decks: null
+    decks: null,
+    error: null
   },    
   
   getters: {
@@ -33,6 +34,9 @@ const store = createStore({
       const deck = state.decks?.filter(deck => deck.id === deckId)
       const cards = deck ? deck[0].cards?.filter(card => card.id === cardId) : null
       return cards ? cards[0] : null
+    },
+    error (state) {
+      return state.error
     }
   },
   mutations: {
@@ -60,10 +64,14 @@ const store = createStore({
     },
     SET_LOGGED_IN(state, value) {
       state.user.loggedIn = value;
+    },
+    setError(state, error) {
+      state.error = error
     }
   },
   actions: {
       async register(context, { email, password, name}){
+        try {
           const {user} = await createUserWithEmailAndPassword(auth, email, password)
           if (user) {
               context.commit('SET_USER', user)
@@ -73,17 +81,26 @@ const store = createStore({
                 displayName: user.displayName
               })
           } else {
-              throw new Error('Unable to register user')
+              throw new Error("Unable to register user, please make sure you've used a valid email address and password")
           }
+        } catch (err) {
+          context.commit('setError', err)
+          throw new Error("Unable to register user, please make sure you've used a valid email address and password")
+        }
       },
 
       async logIn(context, { email, password }){
-        const response = await signInWithEmailAndPassword(auth, email, password)
-        if (response) {
-            context.commit('SET_USER', response.user)
-            context.dispatch('syncData')
-        } else {
-            throw new Error('Login failed')
+        try{
+          const response = await signInWithEmailAndPassword(auth, email, password)
+          if (response) {
+              context.commit('SET_USER', response.user)
+              context.dispatch('syncData')
+          } else {
+              throw new Error('Login failed! Please check your credentials.')
+          }
+        } catch (err) {
+          context.commit('setError', err)
+          throw new Error('Login failed! Please check your credentials.')
         }
     },
 
@@ -144,14 +161,16 @@ const store = createStore({
     },
 
     async syncData(context) {
-      const userId = auth.currentUser.uid
-      let decks = []
-      const res = await axios.get(`${env.apiHost}/getDecks?userId=${userId}`)
-      for (let i = 0; i < res.data.length; i++) {
-        const cardsRes = await axios.get(`${env.apiHost}/getCards?userId=${userId}&deckId=${res.data[i].id}`)
-        decks.push({...res.data[i], cards: cardsRes.data})
+      const userId = auth.currentUser?.uid
+      if (userId) {
+        let decks = []
+        const res = await axios.get(`${env.apiHost}/getDecks?userId=${userId}`)
+        for (let i = 0; i < res.data.length; i++) {
+          const cardsRes = await axios.get(`${env.apiHost}/getCards?userId=${userId}&deckId=${res.data[i].id}`)
+          decks.push({...res.data[i], cards: cardsRes.data})
+        }
+        context.commit('syncData', decks)
       }
-      context.commit('syncData', decks)
     }
   }
   

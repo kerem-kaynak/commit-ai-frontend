@@ -110,6 +110,7 @@ const getCurrentUser = () => {
 }
 
 router.beforeEach(async (to, from, next) => {
+  store.commit('setError', null)
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   const pageTitle = to.meta.title
   document.title = `Commit AI | ${pageTitle}`
