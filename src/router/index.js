@@ -6,6 +6,7 @@ import CreateNewCardView from '../views/CreateNewCardView.vue'
 import CardView from '../views/CardView.vue'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
+import AboutView from '../views/AboutView.vue'
 import { auth } from '../../firebase-service'
 import store from '../store'
 
@@ -59,6 +60,15 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
         title: 'Create Deck'
+      }
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: AboutView,
+      meta: {
+        requiresAuth: true,
+        title: 'About'
       }
     },
     {
